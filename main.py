@@ -46,7 +46,7 @@ class Presence:
         self.running = False
 
     def start(self) -> None:
-        if "Discord.exe" not in (p.name() for p in psutil.process_iter()):
+        if not any([p.name() in ("Discord.exe", "DiscordCanary.exe") for p in psutil.process_iter()]):
             print("[YandexMusicRPC] -> Discord is not launched")
             return
 
@@ -57,7 +57,7 @@ class Presence:
 
         self.running = True
         while self.running:
-            if "Discord.exe" not in (p.name() for p in psutil.process_iter()):
+            if not any([p.name() in ("Discord.exe", "DiscordCanary.exe") for p in psutil.process_iter()]):
                 print("[YandexMusicRPC] -> Discord was closed")
                 return
             if self.currentTrack != (ongoing_track := self.getTrack()):
@@ -67,7 +67,8 @@ class Presence:
                         details=ongoing_track['label'],
                         state=ongoing_track['duration'],
                         large_image=ongoing_track['og-image'],
-                        large_text='Y.M',
+                        small_image='og-image',
+                        large_text='YandexMusic',
                         buttons=[{'label': 'Go to the track', 'url': ongoing_track['link']}]
                     )
                 else:
@@ -75,7 +76,8 @@ class Presence:
                         details=ongoing_track['label'],
                         state=ongoing_track['duration'],
                         large_image=ongoing_track['og_image'],
-                        large_text='Y.M'
+                        small_image='og-image',
+                        large_text='YandexMusic'
                     )
                 self.currentTrack = ongoing_track
             time.sleep(10)
